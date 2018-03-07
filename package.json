@@ -6,11 +6,13 @@
   "author": "<igor.crispimdiniz@gmail.com>",
   "license": "MIT",
   "private": true,
+  "nodemonConfig": {
+    "ignore": ["dist/*"]
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --mode development; node dist/server.js",
-    "build": "webpack --mode development",
-    "run": "node dist/server.js"
+    "start": "nodemon --watch src --exec 'yarn run build && node dist/server.js'",
+    "build": "webpack --mode production"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -26,6 +28,7 @@
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0",
+    "nodemon": "^1.17.1",
     "prettier": "^1.11.1",
     "prettier-eslint": "^8.8.1",
     "webpack": "^4.1.0",
@@ -34,7 +37,10 @@
   },
   "dependencies": {
     "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
     "express": "^4.16.2",
-    "mongoose": "^5.0.8"
+    "mongoose": "^5.0.8",
+    "node-fetch": "^2.1.1",
+    "query-string": "^5.1.0"
   }
 }

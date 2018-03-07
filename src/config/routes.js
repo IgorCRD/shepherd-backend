@@ -1,6 +1,6 @@
 import authentication from 'controllers/authentication';
 
-const routes = (rootRouter = null) => {
+const routes = (rootRouter) => {
   rootRouter.use('/authentication', authentication);
 };
 

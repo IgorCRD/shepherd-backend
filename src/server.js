@@ -1,19 +1,16 @@
 import express from 'express';
 import config from 'config/server-config';
-import routes from 'controllers/routes';
+import routes from 'config/routes';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 const app = express();
-const rootRouter = express.Router();
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static('public'));
 
-rootRouter.get('/', (req, res) => {
-  res.json({ message: 'Gits watcher api!' });
-});
-
+const rootRouter = express.Router({ mergeParams: true });
 routes(rootRouter); // Register all routes in the root router
 
 app.use('/api', rootRouter);

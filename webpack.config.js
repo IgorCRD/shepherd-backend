@@ -9,8 +9,9 @@ module.exports = {
   },
   resolve: {
     alias: {
+      api: path.resolve(__dirname, 'src/api/'),
       controllers: path.resolve(__dirname, 'src/controllers/'),
-      config: path.resolve(__dirname, 'config/'),
+      config: path.resolve(__dirname, 'src/config/'),
       root: path.resolve(__dirname, ''),
     },
     extensions: ['.js'],
