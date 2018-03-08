@@ -1,26 +1,40 @@
 import express from 'express';
 import GitHubApi from 'api/github-api';
+import User from 'models/user';
+// import mongoose from 'mongoose';
+// const User = mongoose.model('User', {});
 
 const authenticationRouter = express.Router({
   mergeParams: true,
 });
 
 authenticationRouter.post('/', (req, res) => {
-  GitHubApi.getToken(req.body.code)
-    .then((tokenObject) => {
-      // eslint-disable-next-line no-console
-      console.log(JSON.stringify(tokenObject));
-      return GitHubApi.getUserByToken(tokenObject.access_token);
+  const { body: { code } } = req;
+
+  let token;
+  let user;
+  GitHubApi.getTokenFromCode(code)
+    .then((tokenP) => {
+      token = tokenP.access_token;
+      return GitHubApi.getUserByToken(token);
     })
-    .then((user) => {
+    .then((userP) => {
+      user = userP;
+      return User.findOne({ id: user.id });
+    })
+    .then((userFromDb) => {
+      if (userFromDb) {
+        return User.findOneAndUpdate({ id: userFromDb.id }, user);
+      }
+      const newUser = new User(user);
+      return newUser.save();
+    })
+    .then((userFromDb) => {
       // eslint-disable-next-line no-console
-      console.log(`user ${JSON.stringify(user)}`);
+      console.log(userFromDb);
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify({ token, code, user }));
       res.json(user);
-    })
-    .catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(`Error ${error}`);
-      res.send('fim');
     });
 });
 

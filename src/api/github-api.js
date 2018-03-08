@@ -16,7 +16,7 @@ class GitHubApi {
     return getTokenUrl.href;
   };
 
-  getToken = code =>
+  getTokenFromCode = code =>
     fetch(this.getAcessTokenUrl(code), {
       method: 'POST',
       headers: { ...GitHubApi.headers },

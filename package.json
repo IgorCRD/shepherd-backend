@@ -12,7 +12,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --watch src --exec \"yarn run build && node dist/server.js\"",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "dev": "webpack --mode development"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -39,7 +40,7 @@
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "express": "^4.16.2",
-    "mongoose": "^5.0.8",
+    "mongoose": "^5.0.9",
     "node-fetch": "^2.1.1",
     "query-string": "^5.1.0"
   }

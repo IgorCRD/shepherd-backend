@@ -1,7 +1,7 @@
 import authentication from 'controllers/authentication';
 
-const routes = (rootRouter) => {
+const configRouter = (rootRouter) => {
   rootRouter.use('/authentication', authentication);
 };
 
-export default routes;
+export default configRouter;

@@ -1,8 +1,8 @@
 import express from 'express';
-import config from 'config/server-config';
-import routes from 'config/routes';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import serverConfig from 'config/server-config';
+import configRouter from 'config/routes-config';
 
 const app = express();
 
@@ -11,11 +11,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const rootRouter = express.Router({ mergeParams: true });
-routes(rootRouter); // Register all routes in the root router
+configRouter(rootRouter); // Register all routes in the root router
 
 app.use('/api', rootRouter);
 
-app.listen(config.port, () => {
+app.listen(serverConfig.port, () => {
   // eslint-disable-next-line no-console
-  console.log('Server listening on port %s, Ctrl+C to stop', config.port);
+  console.log('Server listening on port %s, Ctrl+C to stop', serverConfig.port);
 });

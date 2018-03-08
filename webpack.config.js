@@ -9,14 +9,16 @@ module.exports = {
   },
   resolve: {
     alias: {
-      api: path.resolve(__dirname, 'src/api/'),
-      controllers: path.resolve(__dirname, 'src/controllers/'),
-      config: path.resolve(__dirname, 'src/config/'),
       root: path.resolve(__dirname, ''),
+      api: path.resolve(__dirname, 'src/api/'),
+      config: path.resolve(__dirname, 'src/config/'),
+      controllers: path.resolve(__dirname, 'src/controllers/'),
+      db: path.resolve(__dirname, 'src/db'),
+      models: path.resolve(__dirname, 'src/models'),
     },
     extensions: ['.js'],
   },
-  devtool: 'sourcemap',
+  devtool: 'source-map',
   module: {
     rules: [
       {

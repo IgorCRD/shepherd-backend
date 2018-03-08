@@ -1,7 +1,7 @@
 const gitHubApiConfig = {
   keys: {
-    client_id: 'ce6230dff8a4e3621b3b',
-    client_secret: 'f0adafdb13580aed24142594c0817b84ee709912',
+    client_id: '213e2fe09d8d983e11d8',
+    client_secret: '55651934d0e388d8813d375afc6755640a9339ad',
   },
   accessTokenUrl: 'https://github.com/login/oauth/access_token',
   gitHubApiUrl: 'https://api.github.com/',
