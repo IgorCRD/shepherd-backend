@@ -6,6 +6,9 @@
   "author": "<igor.crispimdiniz@gmail.com>",
   "license": "MIT",
   "private": true,
+  "prettier": {
+    "printWidth": 100
+  },
   "nodemonConfig": {
     "ignore": ["dist/*"]
   },

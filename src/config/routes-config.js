@@ -1,7 +1,7 @@
-import authentication from 'controllers/authentication';
+import authentication from 'controllers/user-controller';
 
 const configRouter = (rootRouter) => {
-  rootRouter.use('/authentication', authentication);
+  rootRouter.use('/user', authentication);
 };
 
 export default configRouter;

@@ -13,6 +13,7 @@ module.exports = {
   rules: {
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'react/no-did-mount-set-state': [false],
+    'max-len': 'off',
   },
   env: {
     browser: true,

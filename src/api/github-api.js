@@ -29,7 +29,9 @@ class GitHubApi {
     return fetch(apiUrl.href, {
       method: 'GET',
       headers: { ...GitHubApi.headers, Authorization: `token  ${token}` },
-    }).then(resp => resp.json());
+    })
+      .then(resp => resp.json())
+      .then(user => ({ token, ...user }));
   };
 }
 
