@@ -10,7 +10,7 @@
     "printWidth": 100
   },
   "nodemonConfig": {
-    "ignore": ["dist/*"]
+    "ignore": ["dist/*", "node_modules/*"]
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

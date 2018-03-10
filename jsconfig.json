@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "paths": {
+      "root/*": ["./*"],
+      "api/*": ["src/api/*"],
+      "config/*": ["src/config/*"],
+      "controllers/*": ["src/controllers/*"],
+      "db/*": ["src/db/*"],
+      "models/*": ["src/models/*"]
+    }
+  },
+  "exclude": ["dist", "node_modules"]
+}
