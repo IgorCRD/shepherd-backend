@@ -33,6 +33,27 @@ class GitHubApi {
       .then(resp => resp.json())
       .then(user => ({ token, ...user }));
   };
+
+  searchRepo = (token, query, repoOwner) => {
+    const searchRepoUrl = new URL(gitHubApiConfig.gitHubApiUrl);
+    searchRepoUrl.pathname = '/search/repositories';
+    searchRepoUrl.search = `q=${query}${repoOwner ? `+user:${repoOwner}` : ''}`;
+
+    return fetch(searchRepoUrl.href, {
+      method: 'GET',
+      headers: { ...GitHubApi.headers, Authorization: `token  ${token}` },
+    }).then(resp => resp.json());
+  };
+
+  getRepo = (token, repoId) => {
+    const getRepoUrl = new URL(gitHubApiConfig.gitHubApiUrl);
+    getRepoUrl.pathname = `/repositories/${repoId}`;
+
+    return fetch(getRepoUrl.href, {
+      method: 'GET',
+      headers: { ...GitHubApi.headers, Authorization: `token  ${token}` },
+    }).then(resp => resp.json());
+  };
 }
 
 export default new GitHubApi();

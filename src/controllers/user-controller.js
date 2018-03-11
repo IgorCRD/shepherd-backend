@@ -23,11 +23,7 @@ function syncUserInDb(user) {
   return User.findOneAndUpdate({ id: user.id }, user, { new: true }).then(userInDb => userInDb || new User(user).save());
 }
 
-const userRouter = express.Router({
-  mergeParams: true,
-});
-
-userRouter.post('/authenticate', (req, res) => {
+function authenticateUser(req, res) {
   const { body: { code } } = req;
   try {
     fetchUser(code)
@@ -42,9 +38,9 @@ userRouter.post('/authenticate', (req, res) => {
   } catch (e) {
     res.json({ error: 'Authentication failed!' });
   }
-});
+}
 
-userRouter.get('/:id', (req, res) => {
+function getUserById(req, res) {
   try {
     const id = Number(req.params.id);
     Token.find({ id })
@@ -52,13 +48,20 @@ userRouter.get('/:id', (req, res) => {
       .then(syncUserInDb)
       .then((userFromDb) => {
         if (!userFromDb) {
-          res.json({ error: 'Authentication failed!' });
+          res.json({ error: 'User not found!' });
         }
         res.json(userFromDb);
       });
   } catch (e) {
-    res.json({ error: 'User not found' });
+    res.json({ error: 'User not found!' });
   }
+}
+
+const userRouter = express.Router({
+  mergeParams: true,
 });
+
+userRouter.post('/authenticate', authenticateUser);
+userRouter.get('/:id', getUserById);
 
 export default userRouter;

@@ -20,6 +20,7 @@ const userSchema = new Schema({
   private_gists: Number,
   total_private_repos: Number,
   owned_private_repos: Number,
+  monitored_repos: [{ type: Schema.Types.ObjectId, ref: 'repo' }],
 });
 
 const User = mongo.model('User', userSchema);
