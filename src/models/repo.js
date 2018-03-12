@@ -6,6 +6,7 @@ const repoSchema = new Schema({
   name: String,
   full_name: String,
   ownerId: Number,
+  ownerName: String,
   private: Boolean,
   html_url: String,
   description: String,
@@ -16,6 +17,6 @@ const repoSchema = new Schema({
   language: String,
 });
 
-const Token = mongo.model('repo', repoSchema);
+const Repo = mongo.model('repo', repoSchema);
 
-export default Token;
+export default Repo;

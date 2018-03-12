@@ -7,13 +7,10 @@
   "license": "MIT",
   "private": true,
   "prettier": {
-    "printWidth": 100
+    "printWidth": 80
   },
   "nodemonConfig": {
-    "ignore": [
-      "dist/*",
-      "node_modules/*"
-    ]
+    "ignore": ["dist/*", "node_modules/*"]
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -2,6 +2,18 @@ import gitHubApiConfig from 'config/github-api-config';
 import fetch from 'node-fetch';
 import { URL, URLSearchParams } from 'url';
 
+function dateMonthsSubtraction(date, monthsAgo) {
+  const averageDaysInMonth = 30;
+  const monthsAgoInt = Math.floor(monthsAgo);
+  const daysAgo = (monthsAgo - monthsAgoInt) * averageDaysInMonth;
+
+  const timeAgo = new Date(date.getTime());
+  timeAgo.setDate(timeAgo.getDate() - daysAgo);
+  timeAgo.setMonth(timeAgo.getMonth() - monthsAgo);
+
+  return timeAgo;
+}
+
 class GitHubApi {
   static headers = {
     Accept: 'application/json',
@@ -52,6 +64,23 @@ class GitHubApi {
     return fetch(getRepoUrl.href, {
       method: 'GET',
       headers: { ...GitHubApi.headers, Authorization: `token  ${token}` },
+    }).then(resp => resp.json());
+  };
+
+  getCommits = (token, userName, repoName, howOldInMonths = 1) => {
+    const nMonthsAgo = dateMonthsSubtraction(new Date(), howOldInMonths);
+
+    const getCommitsUrl = new URL(gitHubApiConfig.gitHubApiUrl);
+    getCommitsUrl.pathname = `/repos/${userName}/${repoName}/commits`;
+    getCommitsUrl.search = `since=${nMonthsAgo.toJSON()}`;
+
+    return fetch(getCommitsUrl.href, {
+      method: 'GET',
+      headers: {
+        ...GitHubApi.headers,
+        Authorization: `token ${token}`,
+        Accept: 'application/vnd.github.cloak-preview',
+      },
     }).then(resp => resp.json());
   };
 }

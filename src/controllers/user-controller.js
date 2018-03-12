@@ -15,7 +15,9 @@ function syncTokenInDb(user) {
       return userWithoutToken;
     }
     const newToken = new Token({ id: user.id, token });
-    return newToken.save().then(tokenSaved => (tokenSaved ? userWithoutToken : null));
+    return newToken
+      .save()
+      .then(tokenSaved => (tokenSaved ? userWithoutToken : null));
   });
 }
 
@@ -53,7 +55,23 @@ function getUserById(req, res) {
         res.json(userFromDb);
       });
   } catch (e) {
-    res.json({ error: 'User not found!' });
+    res.json({ error: 'Internal error!' });
+  }
+}
+
+function getMonitoredRepos(req, res) {
+  try {
+    const id = Number(req.params.id);
+    User.findOne({ id })
+      .populate('monitored_repos')
+      .exec()
+      .then(user =>
+        res.json({
+          ...user.toJSON(),
+          monitored_repos: user.monitored_repos.map(repo => repo.toJSON()),
+        }));
+  } catch (e) {
+    res.json({ error: 'Internal error!' });
   }
 }
 
@@ -63,5 +81,6 @@ const userRouter = express.Router({
 
 userRouter.post('/authenticate', authenticateUser);
 userRouter.get('/:id', getUserById);
+userRouter.get('/:id/monitored', getMonitoredRepos);
 
 export default userRouter;
