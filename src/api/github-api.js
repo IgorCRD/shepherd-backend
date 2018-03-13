@@ -83,6 +83,58 @@ class GitHubApi {
       },
     }).then(resp => resp.json());
   };
+
+  deleteOurHooks = (token, repoOwner, repoName) => {
+    const getHooksUrl = new URL(gitHubApiConfig.gitHubApiUrl);
+    getHooksUrl.pathname = `/repos/${repoOwner}/${repoName}/hooks`;
+
+    fetch(getHooksUrl.href, {
+      method: 'GET',
+      headers: {
+        ...GitHubApi.headers,
+        Authorization: `token ${token}`,
+      },
+    })
+      .then(resp => resp.json())
+      .then((hooks) => {
+        const ourHooks = hooks.filter(hook => hook.config.url === gitHubApiConfig.webhookRedirectURL);
+        const deleteHookUrl = new URL(gitHubApiConfig.gitHubApiUrl);
+        ourHooks.forEach((hook) => {
+          deleteHookUrl.pathname = `/repos/${repoOwner}/${repoName}/hooks/${
+            hook.id
+          }`;
+          fetch(deleteHookUrl.href, {
+            method: 'DELETE',
+            headers: {
+              ...GitHubApi.headers,
+              Authorization: `token ${token}`,
+            },
+          });
+        });
+      });
+  };
+
+  createHook = (token, repoOwner, repoName) => {
+    const createHookUrl = new URL(gitHubApiConfig.gitHubApiUrl);
+    createHookUrl.pathname = `/repos/${repoOwner}/${repoName}/hooks`;
+
+    return fetch(createHookUrl.href, {
+      method: 'POST',
+      headers: {
+        ...GitHubApi.headers,
+        Authorization: `token ${token}`,
+      },
+      body: JSON.stringify({
+        name: 'web',
+        active: true,
+        events: ['push'],
+        config: {
+          url: gitHubApiConfig.webhookRedirectURL,
+          content_type: 'json',
+        },
+      }),
+    });
+  };
 }
 
 export default new GitHubApi();
