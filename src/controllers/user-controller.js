@@ -2,6 +2,7 @@ import express from 'express';
 import GitHubApi from 'api/github-api';
 import User from 'models/user';
 import Token from 'models/token';
+import Commit from 'models/commit';
 
 function fetchUser(code) {
   return GitHubApi.getTokenFromCode(code).then(tokenP =>
@@ -75,6 +76,20 @@ function getMonitoredRepos(req, res) {
   }
 }
 
+function getAllCommits(req, res) {
+  try {
+    const id = parseInt(req.params.id, 10);
+    User.findOne({ id })
+      .then(user => Commit.find({ repoId: { $in: user.monitored_repos } }))
+      .then(commits => res.json(commits.map(commit => commit.toJSON())))
+      .catch((e) => {
+        res.json(e);
+      });
+  } catch (e) {
+    res.json({ error: 'Internal error' });
+  }
+}
+
 const userRouter = express.Router({
   mergeParams: true,
 });
@@ -82,5 +97,6 @@ const userRouter = express.Router({
 userRouter.post('/authenticate', authenticateUser);
 userRouter.get('/:id', getUserById);
 userRouter.get('/:id/monitored', getMonitoredRepos);
+userRouter.get('/:id/monitored/commits', getAllCommits);
 
 export default userRouter;

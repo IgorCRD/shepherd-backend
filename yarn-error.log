@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/Igor/.nvm/versions/node/v8.9.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js dev
+  /Users/Igor/.nvm/versions/node/v8.9.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js start
 
 PATH: 
   /Users/Igor/mongo/bin/:/Users/Igor/.nvm/versions/node/v8.9.1/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/MacGPG2/bin:/usr/local/share/dotnet:/opt/X11/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands
@@ -6836,9 +6836,9 @@ Lockfile:
 
 Trace: 
   Error: Command failed.
-  Exit code: 2
+  Exit code: 1
   Command: sh
-  Arguments: -c webpack --mode development
+  Arguments: -c node dist/server.js
   Directory: /Users/Igor/code/shepherd-backend
   Output:
   

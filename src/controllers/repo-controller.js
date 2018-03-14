@@ -67,9 +67,8 @@ function addRepo(req, res) {
     repoInDb.then(repo => addRepoToUserList(repo, user));
 
     // create github webhook
-    Promise.all([repoInDb, tokenInDb])
-      .then(([repo, token]) =>
-        githubApi.createHook(token.token, repo.ownerName, repo.name));
+    Promise.all([repoInDb, tokenInDb]).then(([repo, token]) =>
+      githubApi.createHook(token.token, repo.ownerName, repo.name));
 
     // fetch commits from github and save to mongo or just get them from mongo
     const commitsInDb = Promise.all([tokenInDb, repoInDb]).then(([token, repo]) =>
@@ -80,9 +79,26 @@ function addRepo(req, res) {
             .getCommits(token.token, repo.ownerName, repo.name)
             .then((commitsGh) => {
               const commitsToSave = commitsGh.map(commitItem => ({
-                ...commitItem,
+                sha: commitItem.sha,
                 // eslint-disable-next-line no-underscore-dangle
                 repoId: repo._id,
+                repoFullName: repo.full_name,
+                html_url: commitItem.html_url,
+                commit: {
+                  url: commitItem.url,
+                  author: {
+                    name: commitItem.commit.author.name,
+                    email: commitItem.commit.author.email,
+                    date: commitItem.commit.author.date,
+                    login: commitItem.author ? commitItem.author.login : undefined,
+                  },
+                  committer: {
+                    name: commitItem.commit.committer.name,
+                    email: commitItem.commit.committer.email,
+                    date: commitItem.commit.committer.date,
+                  },
+                  message: commitItem.commit.message,
+                },
               }));
               return Commit.insertMany(commitsToSave);
             });
@@ -200,6 +216,7 @@ function webHookReceiver(req, res) {
       sha: commit.id,
       // eslint-disable-next-line no-underscore-dangle
       repoId: repoInDb._id,
+      repoFullName: repo.full_name,
       html_url: commit.url,
       commit: {
         url: `https://api.github.com/repos/${repo.full_name}/git/commits/${
@@ -209,6 +226,7 @@ function webHookReceiver(req, res) {
           name: commit.author.name,
           email: commit.author.email,
           date: commit.timestamp,
+          login: commit.author.username,
         },
         committer: {
           name: commit.committer.name,

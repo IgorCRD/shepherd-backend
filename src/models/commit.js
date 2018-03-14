@@ -4,6 +4,7 @@ import mongo from 'db/mongo';
 const commitSchema = new Schema({
   sha: { type: String, required: true, unique: true },
   repoId: { type: Schema.Types.ObjectId, ref: 'repo' },
+  repoFullName: String,
   html_url: String,
   commit: {
     url: String,
@@ -11,6 +12,7 @@ const commitSchema = new Schema({
       name: String,
       email: String,
       date: String,
+      login: String,
     },
     committer: {
       name: String,
