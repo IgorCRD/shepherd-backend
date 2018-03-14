@@ -69,29 +69,23 @@ function addRepo(req, res) {
     // create github webhook
     Promise.all([repoInDb, tokenInDb])
       .then(([repo, token]) =>
-        githubApi.createHook(token.token, repo.ownerName, repo.name))
-      .then((result) => {
-        // eslint-disable-next-line no-console
-        console.log(result);
-      });
+        githubApi.createHook(token.token, repo.ownerName, repo.name));
 
     // fetch commits from github and save to mongo or just get them from mongo
     const commitsInDb = Promise.all([tokenInDb, repoInDb]).then(([token, repo]) =>
       // eslint-disable-next-line no-underscore-dangle
       Commit.find({ repoId: repo._id }).then((commits) => {
         if (commits.length === 0) {
-          return githubApi.getCommits(
-            token.token,
-            repo.ownerName,
-            repo.name,
-          ).then((commitsGh) => {
-            const commitsToSave = commitsGh.map(commitItem => ({
-              ...commitItem,
-              // eslint-disable-next-line no-underscore-dangle
-              repoId: repo._id,
-            }));
-            return Commit.insertMany(commitsToSave);
-          });
+          return githubApi
+            .getCommits(token.token, repo.ownerName, repo.name)
+            .then((commitsGh) => {
+              const commitsToSave = commitsGh.map(commitItem => ({
+                ...commitItem,
+                // eslint-disable-next-line no-underscore-dangle
+                repoId: repo._id,
+              }));
+              return Commit.insertMany(commitsToSave);
+            });
         }
         return commits;
       }));
@@ -166,8 +160,8 @@ function deleteRepoById(req, res) {
           return Promise.reject(new Error('Repository not monitored'));
         }
 
-        Token.findOne({ id: userId })
-          .then(token => githubApi.deleteOurHooks(token.token, repo.ownerName, repo.name));
+        Token.findOne({ id: userId }).then(token =>
+          githubApi.deleteOurHooks(token.token, repo.ownerName, repo.name));
 
         // eslint-disable-next-line no-underscore-dangle
         Commit.remove({ repoId: repo._id }).exec();
@@ -191,7 +185,42 @@ function deleteRepoById(req, res) {
 }
 
 function webHookReceiver(req, res) {
-  res.json(req);
+  const {
+    repository: repo, commits, zen, hook_id: hookId,
+  } = req.body;
+
+  // request is ping event after the creation of a hook
+  if (zen && hookId) {
+    res.status(204).send();
+    return;
+  }
+
+  Repo.findOne({ id: repo.id }).then((repoInDb) => {
+    const commitsToSave = commits.map(commit => ({
+      sha: commit.id,
+      // eslint-disable-next-line no-underscore-dangle
+      repoId: repoInDb._id,
+      html_url: commit.url,
+      commit: {
+        url: `https://api.github.com/repos/${repo.full_name}/git/commits/${
+          commit.id
+        }`,
+        author: {
+          name: commit.author.name,
+          email: commit.author.email,
+          date: commit.timestamp,
+        },
+        committer: {
+          name: commit.committer.name,
+          email: commit.committer.email,
+          date: commit.timestamp,
+        },
+        message: commit.message,
+      },
+    }));
+    Commit.insertMany(commitsToSave);
+    res.status(204).send();
+  });
 }
 
 const repoRouter = express.Router({
