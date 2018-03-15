@@ -5,7 +5,7 @@ const gitHubApiConfig = {
   },
   accessTokenUrl: 'https://github.com/login/oauth/access_token',
   gitHubApiUrl: 'https://api.github.com/',
-  webhookRedirectURL: 'http://shepherdapi2.localtunnel.me/api/repos/webhook',
+  webhookRedirectURL: 'https://shepherd-alpha.herokuapp.com/api/repos/webhook',
 };
 
 export default gitHubApiConfig;
